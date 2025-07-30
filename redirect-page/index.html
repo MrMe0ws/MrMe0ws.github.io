@@ -322,7 +322,8 @@
                     </div>
                 </div>
                 <p class="redirect-info" id="afterTimerText"></p>
-                <a id="proceedBtn" class="btn btn-primary" href="#" style="display:none;" target="_blank">
+                <a id="proceedBtn" class="btn btn-primary" href="#" style="display:none;" target="_blank"
+                    onclick="stopTimer()">
                     <span id="proceedBtnText" data-key="proceed"></span>
                 </a>
             </div>
@@ -508,9 +509,17 @@
                 timerEl.textContent = timerValue;
                 if (timerValue <= 0) {
                     clearInterval(timerId);
+                    timerId = null;
                     window.location.href = redirectTo;
                 }
             }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerId) {
+                clearInterval(timerId);
+                timerId = null;
+            }
         }
 
         // --- ФУНКЦИИ НАСТРОЕК (ТЕМА И ЯЗЫК) ---
