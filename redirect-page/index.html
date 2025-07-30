@@ -323,7 +323,7 @@
                 </div>
                 <p class="redirect-info" id="afterTimerText"></p>
                 <a id="proceedBtn" class="btn btn-primary" href="#" style="display:none;" target="_blank"
-                    onclick="stopTimer()">
+                    onclick="handleProceedClick(event)">
                     <span id="proceedBtnText" data-key="proceed"></span>
                 </a>
             </div>
@@ -440,6 +440,7 @@
         let timerId = null;
         let redirectTo = "";
         let appInfo = null;
+        let hasRedirected = false; // Флаг для отслеживания перенаправления
 
         // --- ОСНОВНЫЕ ФУНКЦИИ ---
 
@@ -499,7 +500,7 @@
         }
 
         function startTimer() {
-            if (!redirectTo || timerId) return;
+            if (!redirectTo || timerId || hasRedirected) return;
 
             const timerEl = document.getElementById("timer");
             timerEl.textContent = timerValue;
@@ -507,9 +508,10 @@
             timerId = setInterval(() => {
                 timerValue--;
                 timerEl.textContent = timerValue;
-                if (timerValue <= 0) {
+                if (timerValue <= 0 && !hasRedirected) {
                     clearInterval(timerId);
                     timerId = null;
+                    hasRedirected = true;
                     window.location.href = redirectTo;
                 }
             }, 1000);
@@ -519,6 +521,15 @@
             if (timerId) {
                 clearInterval(timerId);
                 timerId = null;
+            }
+        }
+
+        function handleProceedClick(event) {
+            event.preventDefault(); // Предотвращаем стандартное поведение ссылки
+            stopTimer(); // Останавливаем таймер
+            if (redirectTo && !hasRedirected) {
+                hasRedirected = true; // Устанавливаем флаг
+                window.location.href = redirectTo; // Немедленно перенаправляем
             }
         }
 
